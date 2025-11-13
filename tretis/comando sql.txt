@@ -1,0 +1,47 @@
+comando sql
+
+-- 1. Cria o Banco de Dados (se ainda não existir)
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'TetrisDB')
+BEGIN
+    CREATE DATABASE TetrisDB;
+END
+GO
+
+USE TetrisDB;
+GO
+
+-- 2. Cria a tabela de Pontuações
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Highscores]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Highscores (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        PlayerName NVARCHAR(50) NOT NULL,
+        Score INT NOT NULL,
+        DataRegistro DATETIME DEFAULT GETDATE()
+    );
+END
+GO
+
+-- (Opcional) Insere um dado de teste
+-- INSERT INTO Highscores (PlayerName, Score) VALUES ('DevTeste', 1000);
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+USE TetrisDB;
+GO
+
+-- Se a tabela antiga existir, ela será apagada para criar a nova
+IF OBJECT_ID(N'[dbo].[Highscores]', N'U') IS NOT NULL
+    DROP TABLE [dbo].[Highscores];
+GO
+
+-- Cria a tabela com os nomes que você pediu
+CREATE TABLE Highscores (
+    idPontuacao INT IDENTITY(1,1) PRIMARY KEY,  -- Antigo Id
+    nome NVARCHAR(50) NOT NULL,                 -- Antigo PlayerName
+    pontuacao INT NOT NULL,                     -- Antigo Score
+    dthRegistro DATETIME DEFAULT GETDATE()      -- Antigo DataRegistro
+);
+GO
